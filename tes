@@ -1,0 +1,84 @@
+import React, { useState } from 'react';
+import axios from 'axios';
+import './HomePage.css'; // Import CSS file
+
+function HomePage() {
+  const [input, setInput] = useState({
+    longUrl: "",
+    urlCode: ""
+  });
+  const [url, setUrl] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setInput({ ...input, [id]: value });
+    setIsError(false);
+  };
+
+  const handleSubmit = () => {
+    if (!input.longUrl) {
+      setIsError(true);
+      setUrl("Please add a URL");
+      return;
+    }
+    setIsLoading(true);
+    axios.post('/api/url/shorten', input)
+      .then(res => {
+        if (res.status === 200) {
+          const data = res.data;
+          const createUrl = window.location.href + data.urlCode;
+          setUrl(createUrl);
+        }
+        setIsLoading(false);
+      })
+      .catch(error => {
+        const errorMsg = error.response ? error.response.data.error : "An error occurred";
+        setUrl(errorMsg);
+        setIsLoading(false);
+      });
+  };
+
+  return (
+    <div className="background">
+      <div className="shape"></div>
+      <div className="shape"></div>
+      <form>
+        <h3>URL TRACKER</h3>
+        <label htmlFor="longUrl">Long Url</label>
+        <input
+          type="text"
+          placeholder="URL"
+          id="longUrl"
+          value={input.longUrl}
+          onChange={handleInputChange}
+          required
+        />
+        <label htmlFor="urlCode">Custom Code</label>
+        <input
+          type="text"
+          placeholder="Optional"
+          id="urlCode"
+          value={input.urlCode}
+          onChange={handleInputChange}
+        />
+        <button type="button" onClick={handleSubmit} disabled={isLoading}>
+          {isLoading ? "Submitting..." : "Submit"}
+        </button>
+      </form>
+      {url && (
+        <div id="copy">
+          <input value={url} readOnly />
+          <div className="social">
+            <button onClick={() => navigator.clipboard.writeText(url)}>
+              <i className="fab fa-google"></i> Copy
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default HomePage;

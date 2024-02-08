@@ -1,0 +1,7 @@
+/* styles.css */
+/* styles.css */
+@import './tailwind.css'; /* Adjust the path based on your directory structure */
+
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
