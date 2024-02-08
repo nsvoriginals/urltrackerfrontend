@@ -29,6 +29,7 @@ console.log(url)
         setUrl("An error occurred while shortening the URL");
       })
       .finally(() => {
+        console.log(isError)
         setIsLoading(false);
       });
   };
