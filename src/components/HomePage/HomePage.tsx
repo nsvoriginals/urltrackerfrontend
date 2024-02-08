@@ -19,7 +19,7 @@ console.log(url)
   };
   const handleSubmit = () => {
     setIsLoading(true);
-    axios.post(`${process.env.BASE_URL}/api/url/shorten`, input)
+    axios.post('https://urltracker.onrender.com/api/url/shorten', input)
       .then(res => {
         const data = res.data;
         setUrl(data.shortUrl);
